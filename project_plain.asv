@@ -55,8 +55,9 @@ for i = 1:length(EbN0)          % use parfor ('help parfor') to parallelize
   % ===================================================================== %
   % End processing one block of information
   % ===================================================================== %
+
+  BitErrs = biterr(bits,y_hard); % count the bit errors and evaluate the bit error rate
   
-  BitErrs = biterr(bits,y_final); % count the bit errors and evaluate the bit error rate
   totErr = totErr + BitErrs;
   num = num + N; 
   
@@ -67,17 +68,19 @@ for i = 1:length(EbN0)          % use parfor ('help parfor') to parallelize
 
   end 
   BER(i) = totErr/num;
+
 end
 
-BER_theory = qfunc(sqrt(2*10.^(EbN0./10)));
-
-
-semilogy(EbN0,BER_theory, EbN0,BER);
-ylim([1e-4,1]); grid on;
+figure(1);
+semilogy(0.5*EbN0,BER);ylim([1e-4,1]);
+hold on;
+grid on;
+BER_theory = qfunc(sqrt(10.^(2*EbN0/10)));
+semilogy(EbN0,BER_theory);
 legend('Encoded trans. (Simulation)','Uncoded trans. (Theory BER)');
 xlabel('Eb/N0 [dB]')
 ylabel('BER')
-
+hold off;
 % ======================================================================= %
 % End
 % ======================================================================= %
